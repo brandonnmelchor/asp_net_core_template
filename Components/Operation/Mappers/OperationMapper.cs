@@ -10,9 +10,9 @@ public static class OperationMapper
             Description = operationIncoming.Description,
 
             CreatedBy = "user_id",
-            CreatedDate = DateTime.Now,
+            CreatedDate = DateTime.UtcNow,
             ModifiedBy = "user_id",
-            ModifiedDate = DateTime.Now
+            ModifiedDate = DateTime.UtcNow
         };
     }
 
@@ -40,6 +40,6 @@ public static class OperationMapper
         operation.Description = operationIncoming.Description;
 
         operation.ModifiedBy = "user_id";
-        operation.ModifiedDate = DateTime.Now;
+        operation.ModifiedDate = DateTime.UtcNow;
     }
 }
