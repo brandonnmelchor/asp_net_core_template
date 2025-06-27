@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Template.Configuration;
+using Template.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -10,9 +11,7 @@ var config = builder.Configuration;
 // order is important -- place components that depend on others below their dependencies
 // 
 var components = new IComponent[] {
-    new Template.Data.Component(config),
-    new Template.Components.Auth.Component(),
-    new Template.Components.TemplateComponent.Component(),
+    new Template.Components.Operation.Component(),
 };
 
 // enable UseSensitiveDataLogging in the config file

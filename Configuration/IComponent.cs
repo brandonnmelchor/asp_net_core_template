@@ -1,7 +1,6 @@
-namespace Template.Configuration
+namespace Template.Configuration;
+
+public interface IComponent
 {
-    public interface IComponent
-    {
-        void Register(IServiceCollection services);
-    }
+    void Register(IServiceCollection services);
 }
