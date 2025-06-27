@@ -23,6 +23,7 @@ var logSensitiveData = config.GetValue<bool>("asp_net_core_template:UseSensitive
 builder.Services
     .AddDbContextPool<AppDbContext>(options => options
         .UseNpgsql(config.GetConnectionString("AppConnection"))
+        .UseSnakeCaseNamingConvention()
         .EnableSensitiveDataLogging(logSensitiveData));
 
 builder.Services.AddMemoryCache();
