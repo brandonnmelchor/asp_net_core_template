@@ -4,9 +4,6 @@ using Template.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-var clientPath = "../client";
-var corsPolicy = "CorsPolicy";
-
 // - - - service registration - - -
 
 // define components that register dependencies in the application service container
@@ -15,7 +12,7 @@ var corsPolicy = "CorsPolicy";
 var components = new IComponent[] {
     new Template.Data.Component(config),
     new Template.Components.Auth.Component(),
-    new Template.Components.Template.Component(),
+    new Template.Components.TemplateComponent.Component(),
 };
 
 // enable UseSensitiveDataLogging in the config file
@@ -41,15 +38,13 @@ builder.Services.AddCors(options =>
         .Get<List<string>>()
         .ToArray();
 
-    options.AddPolicy(corsPolicy, builder => builder
+    options.AddPolicy("CorsPolicy", builder => builder
         .WithOrigins(origins)
         .AllowCredentials()
         .AllowAnyMethod()
         .AllowAnyHeader());
 });
 
-// components bind services to the the application container here
-// 
 foreach (var component in components)
 {
     component.Register(builder.Services);
@@ -57,11 +52,6 @@ foreach (var component in components)
 
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.AddSpaStaticFiles(options =>
-    {
-        options.RootPath = clientPath + "/dist";
-    });
-
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 }
@@ -70,7 +60,7 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.UseCors(corsPolicy);
+app.UseCors("CorsPolicy");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -89,16 +79,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseSpaStaticFiles();
-
-    app.MapWhen(context => !context.Request.Path.StartsWithSegments("/api"), client =>
-    {
-        app.UseSpa(spa =>
-        {
-            spa.Options.SourcePath = clientPath;
-            spa.UseProxyToSpaDevelopmentServer(config.GetValue<Uri>("asp_net_core_template:ClientDevServer"));
-        });
-    });
 }
 
 app.Run();
