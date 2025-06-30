@@ -11,21 +11,21 @@ public class OperationController(IOperationManager operationManager) : Controlle
     public async Task<IActionResult> AddOperation([FromBody] OperationIncoming operationIncoming)
     {
         var operation = await _operationManager.AddOperation(operationIncoming);
-        return Ok(operation);
+        return CreatedAtAction(nameof(GetOperation), new { operationId = operation.Id }, operation);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetOperations()
     {
         var operations = await _operationManager.GetOperations();
-        return Ok(operations);
+        return !operations.Any() ? NoContent() : Ok(operations);
     }
 
     [HttpGet("{operationId}")]
     public async Task<IActionResult> GetOperation([FromRoute] int operationId)
     {
         var operation = await _operationManager.GetOperation(operationId);
-        return Ok(operation);
+        return operation == null ? NotFound() : Ok(operation);
     }
 
     [HttpPut("{operationId}")]
@@ -35,6 +35,13 @@ public class OperationController(IOperationManager operationManager) : Controlle
         )
     {
         var operation = await _operationManager.UpdateOperation(operationId, operationIncoming);
-        return Ok(operation);
+        return operation == null ? NotFound() : Ok(operation);
+    }
+
+    [HttpDelete("{operationId}")]
+    public async Task<IActionResult> DeleteOperation([FromRoute] int operationId)
+    {
+        var success = await _operationManager.DeleteOperation(operationId);
+        return !success ? NotFound() : NoContent();
     }
 }

@@ -22,16 +22,15 @@ public class OperationManager(AppDbContext appContext) : IOperationManager
             .ToListAsync();
     }
 
-    public async Task<OperationOutgoing> GetOperation(int operationId)
+    public async Task<OperationOutgoing?> GetOperation(int operationId)
     {
         var operation = await _appContext.Operations
             .FirstOrDefaultAsync((operation) => operation.Id == operationId);
 
-        if (operation == null) return new OperationOutgoing();
-        else return operation.ToOperationOutgoing();
+        return operation?.ToOperationOutgoing();
     }
 
-    public async Task<OperationOutgoing> UpdateOperation(
+    public async Task<OperationOutgoing?> UpdateOperation(
         int operationId,
         OperationIncoming operationIncoming
         )
@@ -39,10 +38,24 @@ public class OperationManager(AppDbContext appContext) : IOperationManager
         var operation = await _appContext.Operations
             .FirstOrDefaultAsync((operation) => operation.Id == operationId);
 
-        if (operation == null) return new OperationOutgoing();
+        if (operation == null) return null;
+
         operation.ToOperationUpdated(operationIncoming);
         await _appContext.SaveChangesAsync();
 
         return operation.ToOperationOutgoing();
+    }
+
+    public async Task<bool> DeleteOperation(int operationId)
+    {
+        var operation = await _appContext.Operations
+            .FirstOrDefaultAsync((operation) => operation.Id == operationId);
+
+        if (operation == null) return false;
+
+        _appContext.Operations.Remove(operation);
+        await _appContext.SaveChangesAsync();
+
+        return true;
     }
 }

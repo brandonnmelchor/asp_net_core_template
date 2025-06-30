@@ -6,7 +6,7 @@ public partial class AppDbContext
 {
     public DbSet<Operation> Operations { get; set; }
 
-    static partial void OnModelCreatingOperation(ModelBuilder builder)
+    static partial void CreateOperationModel(ModelBuilder builder)
     {
         builder.Entity<Operation>(builder =>
         {

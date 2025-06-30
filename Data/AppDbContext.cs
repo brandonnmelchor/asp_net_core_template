@@ -15,8 +15,8 @@ public partial class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        OnModelCreatingOperation(builder);
+        CreateOperationModel(builder);
     }
 
-    static partial void OnModelCreatingOperation(ModelBuilder builder);
+    static partial void CreateOperationModel(ModelBuilder builder);
 }
